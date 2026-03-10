@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure P2P Voice</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --success: #16a34a;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #334155;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+            font-family: monospace;
+            background: #f8fafc;
+        }
+
+        input:focus, textarea:focus {
+            outline: 2px solid var(--primary);
+            border-color: transparent;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: var(--primary-dark); }
+        button:active { transform: scale(0.98); }
+        
+        button.secondary { background-color: #e2e8f0; color: #334155; }
+        button.secondary:hover { background-color: #cbd5e1; }
+        
+        button.success { background-color: var(--success); }
+        button.success:hover { background-color: #15803d; }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .status-bar {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Animation for connecting state */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .pulsing { animation: pulse 1.5s infinite; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔒 Secure P2P Voice</h1>
+    <p class="subtitle">Serverless. Encrypted. Direct.</p>
+
+    <div id="statusBar" class="status-bar">
+        <span>●</span> <span id="statusText">Waiting for setup...</span>
+    </div>
+
+    <audio id="remoteAudio" autoplay playsinline></audio>
+
+    <div class="card" id="authCard">
+        <div class="step-title">1. Security Setup</div>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0;">
+            Enter a shared password. Both devices must use the exact same password to encrypt the connection.
+        </p>
+        <input type="password" id="secretKey" placeholder="Enter shared secret password..." />
+        <button onclick="initializeAudio()">🔓 Enable Microphone & Start</button>
+    </div>
+
+    <div id="mainInterface" class="hidden">
+        
+        <div class="role-selector">
+            <button class="secondary" onclick="switchTab('caller')">📞 I'm Calling</button>
+            <button class="secondary" onclick="switchTab('callee')">📱 I'm Receiving</button>
+        </div>
+
+        <div id="callerTab" class="hidden">
+            <div class="card">
+                <div class="step-title"><span class="step-number">A</span> Generate Offer</div>
+                <p style="font-size: 0.85rem; color: #64748b;">Create a secure link and send it to the receiver.</p>
+                
+                <button id="btnCreateOffer" onclick="createOffer()">Generate Encrypted Code</button>
+                
+                <div id="offerOutput" class="hidden" style="margin-top: 1rem;">
+                    <textarea id="localOffer" rows="3" readonly></textarea>
+                    <button class="success" onclick="shareCode('localOffer')">📤 Share Code</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="step-title"><span class="step-number">B</span> Finalize Connection</div>
+                <p style="font-size: 0.85rem; color: #64748b;">Paste the answer code received from the other person.</p>
+                <textarea id="remoteAnswer" rows="3" placeholder="Paste incoming answer code here..."></textarea>
+                <button onclick="finalizeConnection()">🔌 Connect</button>
+            </div>
+        </div>
+
+        <div id="calleeTab" class="hidden">
+            <div class="card">
+                <div class="step-title"><span class="step-number">A</span> Accept Call</div>
+                <p style="font-size: 0.85rem; color: #64748b;">Paste the code received from the caller.</p>
+                <textarea id="remoteOffer" rows="3" placeholder="Paste incoming offer code here..."></textarea>
+                <button onclick="createAnswer()">Generate Answer</button>
+
+                <div id="answerOutput" class="hidden" style="margin-top: 1rem;">
+                    <label>Send this back to caller:</label>
+                    <textarea id="localAnswer" rows="3" readonly></textarea>
+                    <button class="success" onclick="shareCode('localAnswer')">📤 Share Answer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const config = {
+        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    };
+
+    let localStream;
+    let peerConnection;
+    
+    // --- UI FUNCTIONS ---
+    function updateStatus(msg, type = 'normal') {
+        const bar = document.getElementById('statusBar');
+        const text = document.getElementById('statusText');
+        text.innerText = msg;
+        
+        if (type === 'success') {
+            bar.style.background = '#dcfce7';
+            bar.style.color = '#15803d';
+        } else if (type === 'error') {
+            bar.style.background = '#fee2e2';
+            bar.style.color = '#b91c1c';
+        } else {
+            bar.style.background = '#dbeafe';
+            bar.style.color = '#1e40af';
+        }
+    }
+
+    function switchTab(tab) {
+        document.getElementById('callerTab').classList.add('hidden');
+        document.getElementById('calleeTab').classList.add('hidden');
+        document.getElementById(tab + 'Tab').classList.remove('hidden');
+    }
+
+    async function initializeAudio() {
+        const password = document.getElementById('secretKey').value;
+        if (!password) {
+            alert("Please set a password first.");
+            return;
+        }
+
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            document.getElementById('authCard').classList.add('hidden');
+            document.getElementById('mainInterface').classList.remove('hidden');
+            updateStatus("Microphone active. Select your role.");
+        } catch (err) {
+            console.error(err);
+            updateStatus("Error: Microphone access denied.", "error");
+            alert("Microphone permission is required for voice chat.");
+        }
+    }
+
+    async function shareCode(elementId) {
+        const text = document.getElementById(elementId).value;
+        try {
+            if (navigator.share) {
+                await navigator.share({ title: 'Secure Link', text: text });
+            } else {
+                throw new Error("Web Share API not supported");
+            }
+        } catch (err) {
+            await navigator.clipboard.writeText(text);
+            alert("Code copied to clipboard!");
+        }
+    }
+
+    // --- WEBRTC CORE ---
+    function createPeerConnection() {
+        const pc = new RTCPeerConnection(config);
+        
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+        pc.ontrack = (event) => {
+            const remoteAudio = document.getElementById('remoteAudio');
+            remoteAudio.srcObject = event.streams[0];
+            updateStatus("CONNECTED SECURELY 🔒", "success");
+        };
+
+        pc.onconnectionstatechange = () => {
+            if (pc.connectionState === 'connected') {
+                updateStatus("CONNECTED SECURELY 🔒", "success");
+            } else if (pc.connectionState === 'disconnected') {
+                updateStatus("Peer disconnected", "error");
+            }
+        };
+
+        return pc;
+    }
+
+    // CALLER: Step 1
+    async function createOffer() {
+        document.getElementById('btnCreateOffer').disabled = true;
+        updateStatus("Generating keys...", "normal");
+        
+        peerConnection = createPeerConnection();
+        // Create data channel to ensure connection establishment even without audio initially
+        peerConnection.createDataChannel("secure_chat");
+
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        peerConnection.onicecandidate = async (event) => {
+            if (event.candidate === null) {
+                // Gathering complete
+                const rawSDP = JSON.stringify(peerConnection.localDescription);
+                const encryptedSDP = await encryptData(rawSDP);
+                
+                document.getElementById('localOffer').value = encryptedSDP;
+                document.getElementById('offerOutput').classList.remove('hidden');
+                updateStatus("Offer ready. Send it to the receiver.");
+            }
+        };
+    }
+
+    // CALLEE: Step 2
+    async function createAnswer() {
+        const encryptedOffer = document.getElementById('remoteOffer').value;
+        if (!encryptedOffer) return alert("Please paste the offer code first.");
+
+        try {
+            updateStatus("Decrypting...", "normal");
+            const decryptedSDP = await decryptData(encryptedOffer);
+            const offerDesc = JSON.parse(decryptedSDP);
+
+            peerConnection = createPeerConnection();
+            await peerConnection.setRemoteDescription(offerDesc);
+
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            peerConnection.onicecandidate = async (event) => {
+                if (event.candidate === null) {
+                    const rawAnswer = JSON.stringify(peerConnection.localDescription);
+                    const encryptedAnswer = await encryptData(rawAnswer);
+                    
+                    document.getElementById('localAnswer').value = encryptedAnswer;
+                    document.getElementById('answerOutput').classList.remove('hidden');
+                    updateStatus("Answer ready. Send it back to caller.");
+                }
+            };
+
+        } catch (err) {
+            console.error(err);
+            updateStatus("Decryption failed. Check password.", "error");
+            alert("Failed to decrypt. Ensure both sides use the same password.");
+        }
+    }
+
+    // CALLER: Step 3
+    async function finalizeConnection() {
+        const encryptedAnswer = document.getElementById('remoteAnswer').value;
+        if (!encryptedAnswer) return alert("Please paste the answer code.");
+
+        try {
+            updateStatus("Establishing connection...", "pulsing");
+            const decryptedAnswer = await decryptData(encryptedAnswer);
+            const answerDesc = JSON.parse(decryptedAnswer);
+            
+            await peerConnection.setRemoteDescription(answerDesc);
+            
+        } catch (err) {
+            console.error(err);
+            updateStatus("Connection failed. Check codes.", "error");
+            alert("Failed to finalize connection. Check password and codes.");
+        }
+    }
+
+    // --- ENCRYPTION (AES-GCM) ---
+    async function getCryptoKey() {
+        const password = document.getElementById('secretKey').value;
+        const enc = new TextEncoder();
+        const keyMaterial = await window.crypto.subtle.importKey(
+            "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
+        );
+        // Derive a key from the password
+        return window.crypto.subtle.deriveKey(
+            {
+                name: "PBKDF2",
+                salt: enc.encode("static_salt_for_simplicity_v1"), 
+                iterations: 100000,
+                hash: "SHA-256"
+            },
+            keyMaterial,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["encrypt", "decrypt"]
+        );
+    }
+
+    async function encryptData(plainText) {
+        const key = await getCryptoKey();
+        const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Random IV
+        const encodedText = new TextEncoder().encode(plainText);
+
+        const encryptedContent = await window.crypto.subtle.encrypt(
+            { name: "AES-GCM", iv: iv },
+            key,
+            encodedText
+        );
+
+        // Combine IV and Ciphertext for transmission
+        const ivArray = Array.from(iv);
+        const contentArray = Array.from(new Uint8Array(encryptedContent));
+        const package = { iv: ivArray, data: contentArray };
+        
+        return btoa(JSON.stringify(package));
+    }
+
+    async function decryptData(encryptedString) {
+        const key = await getCryptoKey();
+        const package = JSON.parse(atob(encryptedString));
+        
+        const iv = new Uint8Array(package.iv);
+        const data = new Uint8Array(package.data);
+
+        const decryptedContent = await window.crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: iv },
+            key,
+            data
+        );
+
+        return new TextDecoder().decode(decryptedContent);
+    }
+</script>
+
+</body>
+</html>
