@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible non-security defect without private call data.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Never paste a real password, connection code, IP address, or recording. Report vulnerabilities privately as described in SECURITY.md."
+  - type: input
+    id: commit
+    attributes:
+      label: Git commit or release version
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, operating system, and HTTPS/localhost origin type
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction using disposable codes and passwords
+      description: Describe steps without including the actual codes or passwords.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result, including visible status text
+    validations:
+      required: true

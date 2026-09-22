@@ -47,8 +47,16 @@ node --check crypto.js
 
 These automated tests validate code round trips and input rejection. They do **not** prove that a two-device call works on every browser or network. Before a public release, use the [manual acceptance checklist](docs/manual-acceptance.md), including separate devices and networks.
 
+| Environment | Current evidence |
+| --- | --- |
+| Local static page in the Codex in-app browser | Landing page, short-password rejection, and solid-surface control observed |
+| Chromium, Firefox, Safari with two microphones | Call and compatibility not yet verified |
+| Separate networks, mobile devices, TURN-restricted networks | Not yet verified; TURN is not configured |
+
+If a new build causes trouble, serve or deploy the previous static-file Git revision. Do not mix old and new scripts in one deployment. Version 1 and version 2 codes cannot be exchanged; both people must reload the same revision and create fresh codes. Existing calls should be ended before switching revisions.
+
 ## Türkçe özet
 
 Bu proje iki tarayıcı arasında elle kopyalanan şifreli WebRTC bağlantı kodlarıyla ses görüşmesi dener. Uygulamanın hesap veya sinyalleşme sunucusu yoktur; fakat Google'ın genel STUN hizmeti kullanılır. Kod gönderdiğiniz uygulama kayıt tutabilir, karşı taraf ve STUN IP ile ilgili verileri görebilir. 12 karakterden uzun, benzersiz bir parola kullanın ve koddan ayrı bir kanalda iletin. Bağlantı kurulamayan ağlarda TURN gerekebilir; bu önizlemede TURN yoktur. Görüşmeyi bitirince yerel mikrofon izleri durdurulur. Güvenlik sınırları için [SECURITY.md](SECURITY.md) dosyasına bakın.
 
-Licensed under [MIT](LICENSE). Contributions are described in [CONTRIBUTING.md](CONTRIBUTING.md).
+Licensed under [MIT](LICENSE). Contributions are described in [CONTRIBUTING.md](CONTRIBUTING.md); troubleshooting is in [SUPPORT.md](SUPPORT.md).
