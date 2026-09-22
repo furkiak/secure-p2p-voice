@@ -1,448 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure P2P Voice</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --success: #16a34a;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #334155;
-            --border: #e2e8f0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #0f172a;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #64748b;
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-            border: 1px solid var(--border);
-        }
-
-        .step-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .step-number {
-            background: var(--primary);
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        input[type="text"], input[type="password"], textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            margin-bottom: 1rem;
-            font-family: monospace;
-            background: #f8fafc;
-        }
-
-        input:focus, textarea:focus {
-            outline: 2px solid var(--primary);
-            border-color: transparent;
-        }
-
-        button {
-            width: 100%;
-            padding: 0.875rem;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        button:hover { background-color: var(--primary-dark); }
-        button:active { transform: scale(0.98); }
-        
-        button.secondary { background-color: #e2e8f0; color: #334155; }
-        button.secondary:hover { background-color: #cbd5e1; }
-        
-        button.success { background-color: var(--success); }
-        button.success:hover { background-color: #15803d; }
-
-        .role-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .status-bar {
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .hidden { display: none !important; }
-
-        /* Animation for connecting state */
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        .pulsing { animation: pulse 1.5s infinite; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Manual P2P Voice · Local Preview</title>
+  <style>
+    :root{font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#edf4ff;background:#0c1729}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 4%,#354a70 0,transparent 33%),radial-gradient(circle at 88% 24%,#1d5c70 0,transparent 30%),linear-gradient(135deg,#0d192c,#132840 65%,#0d2634);padding:32px 20px 80px}
+    .shell{max-width:1000px;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:48px}.brand{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:800;letter-spacing:.18em}.logo{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;color:#132335;background:linear-gradient(145deg,#f1f9ff,#95c9ef);box-shadow:0 12px 35px #609dd144}.topnote{font-size:13px;color:#c2d5eb;border:1px solid #b8d6f53b;border-radius:999px;padding:8px 13px;background:#d7e8ff13}
+    .hero{max-width:760px;margin-bottom:36px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.2em;font-weight:800;color:#aad0f3}.hero h1{font-size:clamp(38px,6vw,66px);line-height:1.05;letter-spacing:-.055em;margin:13px 0 18px}.hero p{color:#bfd2e6;line-height:1.65;font-size:17px;max-width:660px;margin:0}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.tag{border:1px solid #d0e6ff39;background:#d7eaff16;padding:7px 11px;border-radius:999px;font-size:12px;color:#d9e8f8}
+    .layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.75fr);gap:20px}.panel{border:1px solid #cce5ff42;border-radius:26px;background:linear-gradient(145deg,#dbeafa23,#a9cfff0d);box-shadow:0 25px 70px #020a1e59,inset 0 1px #ffffff2e;backdrop-filter:blur(26px);padding:27px}.panel h2{font-size:23px;letter-spacing:-.025em;margin:0 0 8px}.panel p{color:#bfd2e6;line-height:1.55;margin:0 0 20px}.status{display:flex;align-items:center;gap:12px;margin-bottom:20px;border:1px solid #b9d7fb46;border-radius:17px;background:#10253c99;padding:14px 16px;color:#d8eaff;font-size:14px}.status-dot{width:9px;height:9px;border-radius:50%;background:#a6c7e5;box-shadow:0 0 0 5px #a6c7e524}.status[data-tone=success] .status-dot{background:#81e5ba;box-shadow:0 0 0 5px #81e5ba26}.status[data-tone=error] .status-dot{background:#ff9e9e;box-shadow:0 0 0 5px #ff9e9e29}
+    label{font-size:13px;font-weight:700;color:#e3efff;display:block;margin:0 0 8px}input,textarea{width:100%;border:1px solid #bed9f75a;border-radius:13px;background:#0d2035b8;color:#f5faff;padding:13px 15px;font:inherit;font-size:15px;line-height:1.5;outline:none}textarea{font-family:ui-monospace,Consolas,monospace;resize:vertical;min-height:96px;overflow-wrap:anywhere}input:focus,textarea:focus,button:focus-visible{outline:3px solid #b5dcff;outline-offset:2px}input::placeholder,textarea::placeholder{color:#a5b9cf}.hint{font-size:12px;color:#adc4dc;margin:8px 0 19px;line-height:1.5}.buttonrow{display:flex;flex-wrap:wrap;gap:9px}button{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border:1px solid #b9d6fa60;border-radius:12px;padding:12px 17px;background:#d9ebff1c;color:#eaf4ff;transition:transform .18s,background .18s}button:hover{background:#d9ebff2b;transform:translateY(-1px)}button:disabled{opacity:.5;cursor:not-allowed;transform:none}.primary{background:#c7e4ff;color:#14253a;border-color:#c7e4ff}.primary:hover{background:#e0f0ff;color:#14253a}.danger{color:#ffdada;border-color:#ffb2b35e}.small{font-size:12px}.hidden{display:none!important}.role{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0 20px}.role button[aria-pressed=true]{background:#c7e4ff;color:#14253a}.field{margin:15px 0}.divider{height:1px;background:#d6ebff30;margin:20px 0}.controls{margin-top:19px}.step{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:9px;background:#d5e9ff;color:#14314d;font-size:13px;margin-right:7px}.code-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:9px}.aside-list{padding:0;margin:17px 0 0;list-style:none}.aside-list li{border-top:1px solid #d1e6ff2c;padding:14px 0;color:#d0e1f3;font-size:14px;line-height:1.5}.aside-list b{display:block;color:#f2f8ff;margin-bottom:3px}.footer{color:#abc1d6;font-size:12px;margin-top:28px;line-height:1.6}.footer a{color:#d6ecff}audio{width:100%;margin-top:20px}.solid .panel{backdrop-filter:none;background:#1b3049}.solid .status{background:#14283d}
+    @media(max-width:740px){body{padding:20px 14px 50px}.top{margin-bottom:32px}.layout{grid-template-columns:1fr}.panel{padding:21px}.hero p{font-size:15px}.topnote{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>🔒 Secure P2P Voice</h1>
-    <p class="subtitle">Serverless. Encrypted. Direct.</p>
-
-    <div id="statusBar" class="status-bar">
-        <span>●</span> <span id="statusText">Waiting for setup...</span>
-    </div>
-
-    <audio id="remoteAudio" autoplay playsinline></audio>
-
-    <div class="card" id="authCard">
-        <div class="step-title">1. Security Setup</div>
-        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0;">
-            Enter a shared password. Both devices must use the exact same password to encrypt the connection.
-        </p>
-        <input type="password" id="secretKey" placeholder="Enter shared secret password..." />
-        <button onclick="initializeAudio()">🔓 Enable Microphone & Start</button>
-    </div>
-
-    <div id="mainInterface" class="hidden">
-        
-        <div class="role-selector">
-            <button class="secondary" onclick="switchTab('caller')">📞 I'm Calling</button>
-            <button class="secondary" onclick="switchTab('callee')">📱 I'm Receiving</button>
+  <main class="shell">
+    <header class="top"><div class="brand"><span class="logo" aria-hidden="true">◉</span><span>MANUAL / VOICE</span></div><span class="topnote">1.1.0-beta.1 · local preview</span></header>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="eyebrow">A two-person WebRTC experiment</div>
+      <h1 id="hero-title">A private call, connected by you.</h1>
+      <p>Exchange an encrypted connection code through a channel you choose. The browser negotiates audio with WebRTC; this app has no account or signaling backend.</p>
+      <div class="tags"><span class="tag">Manual code exchange</span><span class="tag">Separate media encryption</span><span class="tag">STUN may be contacted</span></div>
+    </section>
+    <div class="layout">
+      <section class="panel" aria-label="Call setup and controls">
+        <div class="status" id="statusBar" role="status" aria-live="polite" data-tone="normal"><span class="status-dot" aria-hidden="true"></span><span id="statusText">Ready to set up · microphone off</span></div>
+        <div id="setupPane">
+          <h2>Start with a shared secret</h2>
+          <p>Choose a unique password and share it separately with the other person. It protects the connection codes; it does not authenticate an identity.</p>
+          <label for="secretKey">Shared password</label>
+          <input id="secretKey" type="password" minlength="12" maxlength="128" autocomplete="off" placeholder="At least 12 characters">
+          <div class="hint">Avoid a reused password. Anyone who learns it and the code may try to join the call.</div>
+          <button class="primary" id="startButton" type="button">Enable microphone</button>
         </div>
-
-        <div id="callerTab" class="hidden">
-            <div class="card">
-                <div class="step-title"><span class="step-number">A</span> Generate Offer</div>
-                <p style="font-size: 0.85rem; color: #64748b;">Create a secure link and send it to the receiver.</p>
-                
-                <button id="btnCreateOffer" onclick="createOffer()">Generate Encrypted Code</button>
-                
-                <div id="offerOutput" class="hidden" style="margin-top: 1rem;">
-                    <textarea id="localOffer" rows="3" readonly></textarea>
-                    <button class="success" onclick="shareCode('localOffer')">📤 Share Code</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="step-title"><span class="step-number">B</span> Finalize Connection</div>
-                <p style="font-size: 0.85rem; color: #64748b;">Paste the answer code received from the other person.</p>
-                <textarea id="remoteAnswer" rows="3" placeholder="Paste incoming answer code here..."></textarea>
-                <button onclick="finalizeConnection()">🔌 Connect</button>
-            </div>
+        <div id="callPane" class="hidden">
+          <h2>Connect the other device</h2>
+          <p>Choose your role. Send only the generated code; keep the shared password in a separate channel.</p>
+          <div class="role"><button id="callerButton" type="button" aria-pressed="false">I am calling</button><button id="receiverButton" type="button" aria-pressed="false">I am receiving</button></div>
+          <div id="callerPane" class="hidden">
+            <div class="field"><label><span class="step">1</span>Create your offer</label><button id="offerButton" type="button">Generate offer code</button><div class="hint">Wait for ICE gathering; then send this code to the receiver.</div><label for="localOffer">Your offer code</label><textarea id="localOffer" readonly aria-label="Your offer code"></textarea><div class="code-actions"><button type="button" data-copy="localOffer">Copy offer code</button></div></div>
+            <div class="divider"></div>
+            <div class="field"><label for="remoteAnswer"><span class="step">2</span>Paste the answer code</label><textarea id="remoteAnswer" maxlength="48000" placeholder="Paste the receiver's code"></textarea><div class="code-actions"><button id="connectButton" class="primary" type="button">Connect</button></div></div>
+          </div>
+          <div id="receiverPane" class="hidden">
+            <div class="field"><label for="remoteOffer"><span class="step">1</span>Paste the offer code</label><textarea id="remoteOffer" maxlength="48000" placeholder="Paste the caller's code"></textarea><div class="code-actions"><button id="answerButton" class="primary" type="button">Generate answer</button></div></div>
+            <div class="divider"></div>
+            <div class="field"><label for="localAnswer"><span class="step">2</span>Send back your answer</label><textarea id="localAnswer" readonly aria-label="Your answer code"></textarea><div class="code-actions"><button type="button" data-copy="localAnswer">Copy answer code</button></div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="buttonrow controls"><button id="muteButton" type="button">Mute microphone</button><button id="hangupButton" class="danger" type="button">End call &amp; stop mic</button></div>
         </div>
-
-        <div id="calleeTab" class="hidden">
-            <div class="card">
-                <div class="step-title"><span class="step-number">A</span> Accept Call</div>
-                <p style="font-size: 0.85rem; color: #64748b;">Paste the code received from the caller.</p>
-                <textarea id="remoteOffer" rows="3" placeholder="Paste incoming offer code here..."></textarea>
-                <button onclick="createAnswer()">Generate Answer</button>
-
-                <div id="answerOutput" class="hidden" style="margin-top: 1rem;">
-                    <label>Send this back to caller:</label>
-                    <textarea id="localAnswer" rows="3" readonly></textarea>
-                    <button class="success" onclick="shareCode('localAnswer')">📤 Share Answer</button>
-                </div>
-            </div>
-        </div>
+      </section>
+      <aside class="panel" aria-label="Network and privacy boundaries">
+        <div class="eyebrow">Before you share a code</div><h2>Know the boundaries.</h2>
+        <ul class="aside-list">
+          <li><b>No app signaling server</b>You carry offer and answer codes yourself. The service used to send them may keep logs.</li>
+          <li><b>Network assistance</b>This preview uses Google's public STUN service. Peers and STUN can observe IP-related metadata; no TURN fallback is configured.</li>
+          <li><b>Two encryption layers</b>A password-derived AES-GCM key protects shared codes. WebRTC uses DTLS-SRTP for media. A weak or leaked password still matters.</li>
+          <li><b>Connection limits</b>Some networks need TURN and will fail here. End call stops local tracks; a recipient can still retain audio already received.</li>
+        </ul>
+        <button id="solidButton" type="button" class="small" aria-pressed="false">Use solid surfaces</button>
+      </aside>
     </div>
-</div>
-
-<script>
-    // --- CONFIGURATION ---
-    const config = {
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-    };
-
-    let localStream;
-    let peerConnection;
-    
-    // --- UI FUNCTIONS ---
-    function updateStatus(msg, type = 'normal') {
-        const bar = document.getElementById('statusBar');
-        const text = document.getElementById('statusText');
-        text.innerText = msg;
-        
-        if (type === 'success') {
-            bar.style.background = '#dcfce7';
-            bar.style.color = '#15803d';
-        } else if (type === 'error') {
-            bar.style.background = '#fee2e2';
-            bar.style.color = '#b91c1c';
-        } else {
-            bar.style.background = '#dbeafe';
-            bar.style.color = '#1e40af';
-        }
-    }
-
-    function switchTab(tab) {
-        document.getElementById('callerTab').classList.add('hidden');
-        document.getElementById('calleeTab').classList.add('hidden');
-        document.getElementById(tab + 'Tab').classList.remove('hidden');
-    }
-
-    async function initializeAudio() {
-        const password = document.getElementById('secretKey').value;
-        if (!password) {
-            alert("Please set a password first.");
-            return;
-        }
-
-        try {
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            document.getElementById('authCard').classList.add('hidden');
-            document.getElementById('mainInterface').classList.remove('hidden');
-            updateStatus("Microphone active. Select your role.");
-        } catch (err) {
-            console.error(err);
-            updateStatus("Error: Microphone access denied.", "error");
-            alert("Microphone permission is required for voice chat.");
-        }
-    }
-
-    async function shareCode(elementId) {
-        const text = document.getElementById(elementId).value;
-        try {
-            if (navigator.share) {
-                await navigator.share({ title: 'Secure Link', text: text });
-            } else {
-                throw new Error("Web Share API not supported");
-            }
-        } catch (err) {
-            await navigator.clipboard.writeText(text);
-            alert("Code copied to clipboard!");
-        }
-    }
-
-    // --- WEBRTC CORE ---
-    function createPeerConnection() {
-        const pc = new RTCPeerConnection(config);
-        
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-        pc.ontrack = (event) => {
-            const remoteAudio = document.getElementById('remoteAudio');
-            remoteAudio.srcObject = event.streams[0];
-            updateStatus("CONNECTED SECURELY 🔒", "success");
-        };
-
-        pc.onconnectionstatechange = () => {
-            if (pc.connectionState === 'connected') {
-                updateStatus("CONNECTED SECURELY 🔒", "success");
-            } else if (pc.connectionState === 'disconnected') {
-                updateStatus("Peer disconnected", "error");
-            }
-        };
-
-        return pc;
-    }
-
-    // CALLER: Step 1
-    async function createOffer() {
-        document.getElementById('btnCreateOffer').disabled = true;
-        updateStatus("Generating keys...", "normal");
-        
-        peerConnection = createPeerConnection();
-        // Create data channel to ensure connection establishment even without audio initially
-        peerConnection.createDataChannel("secure_chat");
-
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-
-        peerConnection.onicecandidate = async (event) => {
-            if (event.candidate === null) {
-                // Gathering complete
-                const rawSDP = JSON.stringify(peerConnection.localDescription);
-                const encryptedSDP = await encryptData(rawSDP);
-                
-                document.getElementById('localOffer').value = encryptedSDP;
-                document.getElementById('offerOutput').classList.remove('hidden');
-                updateStatus("Offer ready. Send it to the receiver.");
-            }
-        };
-    }
-
-    // CALLEE: Step 2
-    async function createAnswer() {
-        const encryptedOffer = document.getElementById('remoteOffer').value;
-        if (!encryptedOffer) return alert("Please paste the offer code first.");
-
-        try {
-            updateStatus("Decrypting...", "normal");
-            const decryptedSDP = await decryptData(encryptedOffer);
-            const offerDesc = JSON.parse(decryptedSDP);
-
-            peerConnection = createPeerConnection();
-            await peerConnection.setRemoteDescription(offerDesc);
-
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-
-            peerConnection.onicecandidate = async (event) => {
-                if (event.candidate === null) {
-                    const rawAnswer = JSON.stringify(peerConnection.localDescription);
-                    const encryptedAnswer = await encryptData(rawAnswer);
-                    
-                    document.getElementById('localAnswer').value = encryptedAnswer;
-                    document.getElementById('answerOutput').classList.remove('hidden');
-                    updateStatus("Answer ready. Send it back to caller.");
-                }
-            };
-
-        } catch (err) {
-            console.error(err);
-            updateStatus("Decryption failed. Check password.", "error");
-            alert("Failed to decrypt. Ensure both sides use the same password.");
-        }
-    }
-
-    // CALLER: Step 3
-    async function finalizeConnection() {
-        const encryptedAnswer = document.getElementById('remoteAnswer').value;
-        if (!encryptedAnswer) return alert("Please paste the answer code.");
-
-        try {
-            updateStatus("Establishing connection...", "pulsing");
-            const decryptedAnswer = await decryptData(encryptedAnswer);
-            const answerDesc = JSON.parse(decryptedAnswer);
-            
-            await peerConnection.setRemoteDescription(answerDesc);
-            
-        } catch (err) {
-            console.error(err);
-            updateStatus("Connection failed. Check codes.", "error");
-            alert("Failed to finalize connection. Check password and codes.");
-        }
-    }
-
-    // --- ENCRYPTION (AES-GCM) ---
-    async function getCryptoKey() {
-        const password = document.getElementById('secretKey').value;
-        const enc = new TextEncoder();
-        const keyMaterial = await window.crypto.subtle.importKey(
-            "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
-        );
-        // Derive a key from the password
-        return window.crypto.subtle.deriveKey(
-            {
-                name: "PBKDF2",
-                salt: enc.encode("static_salt_for_simplicity_v1"), 
-                iterations: 100000,
-                hash: "SHA-256"
-            },
-            keyMaterial,
-            { name: "AES-GCM", length: 256 },
-            false,
-            ["encrypt", "decrypt"]
-        );
-    }
-
-    async function encryptData(plainText) {
-        const key = await getCryptoKey();
-        const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Random IV
-        const encodedText = new TextEncoder().encode(plainText);
-
-        const encryptedContent = await window.crypto.subtle.encrypt(
-            { name: "AES-GCM", iv: iv },
-            key,
-            encodedText
-        );
-
-        // Combine IV and Ciphertext for transmission
-        const ivArray = Array.from(iv);
-        const contentArray = Array.from(new Uint8Array(encryptedContent));
-        const package = { iv: ivArray, data: contentArray };
-        
-        return btoa(JSON.stringify(package));
-    }
-
-    async function decryptData(encryptedString) {
-        const key = await getCryptoKey();
-        const package = JSON.parse(atob(encryptedString));
-        
-        const iv = new Uint8Array(package.iv);
-        const data = new Uint8Array(package.data);
-
-        const decryptedContent = await window.crypto.subtle.decrypt(
-            { name: "AES-GCM", iv: iv },
-            key,
-            data
-        );
-
-        return new TextDecoder().decode(decryptedContent);
-    }
-</script>
-
+    <audio id="remoteAudio" class="hidden" autoplay controls playsinline aria-label="Remote audio playback"></audio>
+    <p class="footer">Source preview · secure context required for microphone access (localhost or HTTPS). See <a href="README.md">setup and limitations</a> and <a href="SECURITY.md">security notes</a>. This page does not send analytics or create an account.</p>
+  </main>
+  <script src="crypto.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

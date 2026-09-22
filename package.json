@@ -1,0 +1,8 @@
+{
+  "name": "secure-p2p-voice-demo",
+  "version": "1.1.0-beta.1",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

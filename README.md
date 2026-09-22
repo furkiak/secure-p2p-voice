@@ -1,88 +1,54 @@
-# 🔒 Serverless P2P Secure Voice Chat (Sunucusuz Güvenli Ses Hattı)
+# Manual P2P Voice
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![WebRTC](https://img.shields.io/badge/Technology-WebRTC-blue.svg)](https://webrtc.org/)
-[![Security](https://img.shields.io/badge/Encryption-AES--GCM-green.svg)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt)
+A two-person browser voice experiment. You exchange an encrypted WebRTC offer and answer by copying codes through a channel of your choice. The app has no account, database, analytics, or application signaling server. **It contacts a public STUN service by default, and the channel you use for code exchange may keep logs.**
 
-[English](#english) | [Türkçe](#türkçe)
+![MIT](https://img.shields.io/badge/license-MIT-blue) ![WebRTC](https://img.shields.io/badge/media-WebRTC-blue) ![Status](https://img.shields.io/badge/status-beta-orange)
 
----
+## Try it locally
 
-<a name="english"></a>
-## 🇬🇧 English
+Requirements: a modern browser with WebRTC/Web Crypto, a microphone, and Python 3 or any static-file server. No npm install is needed for the app.
 
-**Serverless P2P Secure Voice Chat** is a lightweight, browser-based voice communication tool that operates **without any backend signaling server**. 
+```sh
+python -m http.server 8044 --bind 127.0.0.1
+```
 
-Unlike traditional VoIP apps (WhatsApp, Zoom, Telegram), this application does **not** route your calls through a central server. Instead, it establishes a direct peer-to-peer connection between two devices using **Manual Signaling** (Copy-Paste mechanism).
+Open `http://127.0.0.1:8044/` in each local browser. For another device, serve the files over **HTTPS**; a non-local plain HTTP page normally cannot request a microphone. Only grant microphone access after checking the page's origin and the person you intend to call. `file://` behavior varies by browser, so use a local server.
 
-### 🚀 Why is this Unique?
-* **Zero Infrastructure:** No database, no WebSocket server, no accounts, no login.
-* **Zero Logs:** Since there is no server handling the connection, there are no logs of *who* called *whom*, *when*, or for *how long*.
-* **True End-to-End Encryption:** The connection setup (Signaling) is encrypted locally with a password you share, and the audio stream is encrypted via DTLS-SRTP.
+1. Agree on a **unique** shared password of at least 12 characters. Share it through a different channel from the offer/answer codes. A password manager-generated phrase is preferable to a memorable or reused password.
+2. Both parties enter the password and choose **Enable microphone**. The browser asks for permission. The app keeps the password only in this tab's memory until you end the call or leave the page.
+3. Caller selects **I am calling**, generates an offer, and sends the entire code to the intended recipient.
+4. Receiver selects **I am receiving**, pastes the offer, generates an answer, and sends the entire answer code back.
+5. Caller pastes the answer and selects **Connect**. Either person can mute or select **End call & stop mic**. Closing the tab also stops the local tracks.
 
-### 🛠️ Technical Architecture
+If a code fails, check that both parties used the same password and the right call step. Generate a fresh offer if the session has changed. Version 1 codes are intentionally incompatible with the current version 2 format. Some networks require a TURN relay; this preview has **no TURN configuration** and may fail to connect. The receiver can generate an answer while the caller remains offline, but both parties must be online for the call to connect.
 
-#### 1. The Signaling Problem & Solution
-Normally, WebRTC requires a "Signaling Server" to exchange connection details (SDP - Session Description Protocol).
-* **Traditional Apps:** User A sends SDP to Server -> Server sends to User B. (Server knows everything).
-* **This Project:** User A generates SDP -> Encrypts it with AES-GCM -> Sends it manually (via SMS/Email/Signal) -> User B Decrypts it. **No server involved.**
+## What is protected
 
-#### 2. Security Layers
-1.  **Signaling Encryption (AES-GCM):** The connection codes (SDP) are encrypted using **AES-GCM 256-bit** based on a shared password (PBKDF2 key derivation). Even if the text code is intercepted, it is useless without the password.
-2.  **Media Encryption (DTLS-SRTP):** Once connected, the audio stream is encrypted using standard WebRTC protocols (DTLS-SRTP). No one on the network (ISP, Wi-Fi Admin) can listen to the audio.
-3.  **Direct P2P:** Audio packets flow directly from IP to IP.
+The offer/answer is encrypted in the browser with AES-256-GCM and a key derived from the shared password using PBKDF2-SHA-256 (250,000 iterations, fresh 16-byte salt per code). A fresh 12-byte nonce is used for each code. The code format binds its version, offer/answer type, and call ID as authenticated data. WebRTC's DTLS-SRTP protects the audio transport separately. The app does **not** independently authenticate your peer; a person who obtains the password and codes may impersonate a participant, and a weak password can be guessed offline from a captured code. See [SECURITY.md](SECURITY.md) for the threat model and reporting route.
 
-### 📖 How to Use
-1.  Open the `index.html` on both devices (or the hosted URL).
-2.  **Agree on a Password:** Both sides must enter the same secret password.
-3.  **Initiate:**
-    * **Caller:** Click "I will Call", then "Create Code". Copy the generated encrypted text and send it to the friend.
-    * **Receiver:** Click "I am being Called", paste the code, click "Create Answer", and send the new code back.
-4.  **Connect:** Caller pastes the answer code and clicks "Connect".
-5.  **Talk:** The connection is now direct and secure.
+The encryption is specific to signaling; it does not prevent the recipient from recording received audio. The peer and STUN service can learn IP-related metadata. A browser, operating system, extension, hosting provider, or code-sharing service may have its own logging. There is no claim of anonymity, zero logs, or universal direct connectivity.
 
-### ⚠️ Privacy Note
-Since this is a direct P2P connection, **connected peers can see each other's IP addresses**. Use a VPN if you want to hide your location from the person you are talking to.
+## Architecture and verification
 
----
+```text
+Caller browser  -- encrypted offer via your chosen channel --> Receiver browser
+Caller browser  <-- encrypted answer via your chosen channel -- Receiver browser
+       |                                                        |
+       +---- STUN-assisted ICE, then WebRTC DTLS-SRTP audio ----+
+```
 
-<a name="türkçe"></a>
-## 🇹🇷 Türkçe
+`index.html` is the dependency-free interface; `app.js` manages the call lifecycle; `crypto.js` implements the versioned code envelope. `test/crypto.test.js` runs without a microphone:
 
-**Sunucusuz P2P Güvenli Ses Hattı**, herhangi bir arka plan (backend) sunucusuna ihtiyaç duymadan çalışan, tarayıcı tabanlı, hafif ve ultra güvenli bir sesli iletişim aracıdır.
+```sh
+npm test
+node --check app.js
+node --check crypto.js
+```
 
-Geleneksel uygulamaların (WhatsApp, Zoom, Telegram) aksine, bu uygulama aramalarınızı merkezi bir sunucu üzerinden geçirmez. Bunun yerine, "Manuel Sinyalleşme" (Kopyala-Yapıştır yöntemi) kullanarak iki cihaz arasında doğrudan bağlantı kurar.
+These automated tests validate code round trips and input rejection. They do **not** prove that a two-device call works on every browser or network. Before a public release, use the [manual acceptance checklist](docs/manual-acceptance.md), including separate devices and networks.
 
-### 🚀 Neden Farklı?
-* **Sıfır Altyapı:** Veritabanı yok, WebSocket sunucusu yok, üyelik yok, giriş yapmak yok.
-* **Sıfır Log (Kayıt):** Bağlantıyı yöneten bir sunucu olmadığı için, *kimin* *kimi*, *ne zaman* aradığına dair hiçbir kayıt tutulamaz.
-* **Gerçek Uçtan Uca Şifreleme:** Bağlantı kurma kodları (SDP) belirlediğiniz şifre ile kilitlenir, ses verisi ise DTLS-SRTP ile şifrelenir.
+## Türkçe özet
 
-### 🛠️ Teknik Altyapı ve Güvenlik
+Bu proje iki tarayıcı arasında elle kopyalanan şifreli WebRTC bağlantı kodlarıyla ses görüşmesi dener. Uygulamanın hesap veya sinyalleşme sunucusu yoktur; fakat Google'ın genel STUN hizmeti kullanılır. Kod gönderdiğiniz uygulama kayıt tutabilir, karşı taraf ve STUN IP ile ilgili verileri görebilir. 12 karakterden uzun, benzersiz bir parola kullanın ve koddan ayrı bir kanalda iletin. Bağlantı kurulamayan ağlarda TURN gerekebilir; bu önizlemede TURN yoktur. Görüşmeyi bitirince yerel mikrofon izleri durdurulur. Güvenlik sınırları için [SECURITY.md](SECURITY.md) dosyasına bakın.
 
-#### 1. Sinyalleşme Sorunu ve Çözümü
-Normalde WebRTC, bağlantı detaylarını (SDP) değiş tokuş etmek için bir "Sinyalleşme Sunucusu"na ihtiyaç duyar.
-* **Geleneksel Uygulamalar:** A Kişisi SDP'yi Sunucuya atar -> Sunucu B Kişisine iletir. (Sunucu kimin kiminle konuştuğunu bilir).
-* **Bu Proje:** A Kişisi SDP üretir -> **AES-GCM** ile şifreler -> Manuel olarak (SMS/WhatsApp/Signal) gönderir -> B Kişisi şifreyi çözer. **Arada sunucu yoktur.**
-
-#### 2. Güvenlik Katmanları
-1.  **Sinyalleşme Şifrelemesi (AES-GCM):** Bağlantı kodları, belirlediğiniz ortak şifre kullanılarak **AES-GCM 256-bit** standardında şifrelenir. Kod ele geçirilse bile şifre bilinmeden çözülemez.
-2.  **Medya Şifrelemesi (DTLS-SRTP):** Bağlantı kurulduğunda, ses akışı standart WebRTC protokolleri (DTLS-SRTP) ile şifrelenir. Ağdaki kimse (Servis sağlayıcı, Wi-Fi yöneticisi) sesi dinleyemez.
-3.  **Doğrudan P2P:** Ses paketleri doğrudan IP'den IP'ye akar.
-
-### 📖 Nasıl Kullanılır?
-1.  İki cihazda da uygulamayı açın.
-2.  **Şifre Belirleyin:** İki taraf da "Ortak Güvenlik Şifresi" kutusuna aynı şifreyi girmelidir.
-3.  **Başlatma:**
-    * **Arayan:** "Ben Arayacağım" butonuna basar, kodu oluşturur ve arkadaşına gönderir.
-    * **Aranan:** "Beni Arıyorlar" butonuna basar, gelen kodu yapıştırır, cevap kodunu oluşturup geri gönderir.
-4.  **Bağlanma:** Arayan kişi gelen cevabı yapıştırır ve "Bağlan" der.
-5.  **Konuşma:** Güvenli hat hazırdır.
-
-### ⚠️ Gizlilik Notu
-Bağlantı doğrudan P2P (Cihazdan Cihaza) olduğu için, **bağlı taraflar teknik olarak birbirlerinin IP adresini görebilir.** Eğer konuştuğunuz kişiden konumunuzu (IP adresinizi) gizlemek istiyorsanız, bir VPN kullanmanız önerilir.
-
----
-
-### License
-MIT License. Free to use, modify and distribute.
+Licensed under [MIT](LICENSE). Contributions are described in [CONTRIBUTING.md](CONTRIBUTING.md).
