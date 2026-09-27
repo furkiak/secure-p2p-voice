@@ -131,8 +131,8 @@
   $('startButton').addEventListener('click', async () => {
     if (operation) return;
     const password = $('secretKey').value;
-    if (password.length < 12 || new TextEncoder().encode(password).length > 128) {
-      status('Use a unique shared password of 12–128 UTF-8 bytes.', 'error');
+    if (Array.from(password).length < 12 || new TextEncoder().encode(password).length > 128) {
+      status('Use a unique shared password of at least 12 characters and at most 128 UTF-8 bytes.', 'error');
       return;
     }
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {

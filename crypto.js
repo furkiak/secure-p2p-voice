@@ -23,8 +23,8 @@
   }
 
   function checkPassword(password) {
-    if (typeof password !== 'string' || password.length < 12 || enc.encode(password).length > 128)
-      throw new Error('Use a unique shared password of 12–128 UTF-8 bytes.');
+    if (typeof password !== 'string' || Array.from(password).length < 12 || enc.encode(password).length > 128)
+      throw new Error('Use a unique shared password of at least 12 characters and at most 128 UTF-8 bytes.');
   }
 
   function checkType(type) {

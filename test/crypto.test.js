@@ -47,6 +47,7 @@ test('malformed and legacy envelopes fail before decryption', async () => {
 
 test('weak passwords and oversized descriptions are refused', async () => {
   await assert.rejects(envelope.encrypt('offer', 'weak', 'offer'), /12/);
+  await assert.rejects(envelope.encrypt('offer', '😀'.repeat(6), 'offer'), /12/);
   await assert.rejects(envelope.encrypt('x'.repeat(24001), password, 'offer'), /too large/);
   await assert.rejects(envelope.encrypt('offer', password, 'answer'), /session ID/);
 });

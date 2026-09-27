@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Clarify that the password minimum counts Unicode characters and the existing maximum counts UTF-8 bytes; reject passwords shorter than 12 characters in the encryption module and interface.
+- Add an actual local browser capture of the microphone-off entry screen, with its verification limits stated in the README.
+
 ## 1.1.0-beta.1 — local preview
 
 - Rebuilt the interface with explicit call steps, visible microphone state, mute/hangup, keyboard focus, reduced-motion and solid-surface options.

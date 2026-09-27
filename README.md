@@ -2,7 +2,9 @@
 
 A two-person browser voice experiment. You exchange an encrypted WebRTC offer and answer by copying codes through a channel of your choice. The app has no account, database, analytics, or application signaling server. **It contacts a public STUN service by default, and the channel you use for code exchange may keep logs.**
 
-![MIT](https://img.shields.io/badge/license-MIT-blue) ![WebRTC](https://img.shields.io/badge/media-WebRTC-blue) ![Status](https://img.shields.io/badge/status-beta-orange)
+![Actual local browser landing page with the microphone off and an empty password field](docs/images/landing-mic-off-2026-09-28.jpg)
+
+*Local browser capture, 28 September 2026: the microphone is off, the password field is empty, and no call has been established. The image shows the current entry screen; it does not verify a two-device call.*
 
 ## Try it locally
 
@@ -14,7 +16,7 @@ python -m http.server 8044 --bind 127.0.0.1
 
 Open `http://127.0.0.1:8044/` in each local browser. For another device, serve the files over **HTTPS**; a non-local plain HTTP page normally cannot request a microphone. Only grant microphone access after checking the page's origin and the person you intend to call. `file://` behavior varies by browser, so use a local server.
 
-1. Agree on a **unique** shared password of at least 12 characters. Share it through a different channel from the offer/answer codes. A password manager-generated phrase is preferable to a memorable or reused password.
+1. Agree on a **unique** shared password of at least 12 Unicode characters and at most 128 UTF-8 bytes. Share it through a different channel from the offer/answer codes. A password manager-generated phrase is preferable to a memorable or reused password.
 2. Both parties enter the password and choose **Enable microphone**. The browser asks for permission. The app keeps the password only in this tab's memory until you end the call or leave the page.
 3. Caller selects **I am calling**, generates an offer, and sends the entire code to the intended recipient.
 4. Receiver selects **I am receiving**, pastes the offer, generates an answer, and sends the entire answer code back.
@@ -49,7 +51,7 @@ These automated tests validate code round trips and input rejection. They do **n
 
 | Environment | Current evidence |
 | --- | --- |
-| Local static page in the Codex in-app browser | Landing page, short-password rejection, and solid-surface control observed |
+| Local static page in the Codex in-app browser | Landing page with microphone off captured; short-password rejection and solid-surface control observed |
 | Chromium, Firefox, Safari with two microphones | Call and compatibility not yet verified |
 | Separate networks, mobile devices, TURN-restricted networks | Not yet verified; TURN is not configured |
 
@@ -57,6 +59,6 @@ If a new build causes trouble, serve or deploy the previous static-file Git revi
 
 ## Türkçe özet
 
-Bu proje iki tarayıcı arasında elle kopyalanan şifreli WebRTC bağlantı kodlarıyla ses görüşmesi dener. Uygulamanın hesap veya sinyalleşme sunucusu yoktur; fakat Google'ın genel STUN hizmeti kullanılır. Kod gönderdiğiniz uygulama kayıt tutabilir, karşı taraf ve STUN IP ile ilgili verileri görebilir. 12 karakterden uzun, benzersiz bir parola kullanın ve koddan ayrı bir kanalda iletin. Bağlantı kurulamayan ağlarda TURN gerekebilir; bu önizlemede TURN yoktur. Görüşmeyi bitirince yerel mikrofon izleri durdurulur. Güvenlik sınırları için [SECURITY.md](SECURITY.md) dosyasına bakın.
+Bu proje iki tarayıcı arasında elle kopyalanan şifreli WebRTC bağlantı kodlarıyla ses görüşmesi dener. Uygulamanın hesap veya sinyalleşme sunucusu yoktur; fakat Google'ın genel STUN hizmeti kullanılır. Kod gönderdiğiniz uygulama kayıt tutabilir, karşı taraf ve STUN IP ile ilgili verileri görebilir. En az 12 Unicode karakterden oluşan, 128 UTF-8 baytı aşmayan benzersiz bir parola kullanın ve koddan ayrı bir kanalda iletin. Bağlantı kurulamayan ağlarda TURN gerekebilir; bu önizlemede TURN yoktur. Görüşmeyi bitirince yerel mikrofon izleri durdurulur. Güvenlik sınırları için [SECURITY.md](SECURITY.md) dosyasına bakın.
 
 Licensed under [MIT](LICENSE). Contributions are described in [CONTRIBUTING.md](CONTRIBUTING.md); troubleshooting is in [SUPPORT.md](SUPPORT.md).
