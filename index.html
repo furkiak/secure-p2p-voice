@@ -1,448 +1,405 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure P2P Voice</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --success: #16a34a;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #334155;
-            --border: #e2e8f0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #0f172a;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #64748b;
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-            border: 1px solid var(--border);
-        }
-
-        .step-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .step-number {
-            background: var(--primary);
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        input[type="text"], input[type="password"], textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            margin-bottom: 1rem;
-            font-family: monospace;
-            background: #f8fafc;
-        }
-
-        input:focus, textarea:focus {
-            outline: 2px solid var(--primary);
-            border-color: transparent;
-        }
-
-        button {
-            width: 100%;
-            padding: 0.875rem;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        button:hover { background-color: var(--primary-dark); }
-        button:active { transform: scale(0.98); }
-        
-        button.secondary { background-color: #e2e8f0; color: #334155; }
-        button.secondary:hover { background-color: #cbd5e1; }
-        
-        button.success { background-color: var(--success); }
-        button.success:hover { background-color: #15803d; }
-
-        .role-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .status-bar {
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .hidden { display: none !important; }
-
-        /* Animation for connecting state */
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        .pulsing { animation: pulse 1.5s infinite; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- The page can load nothing but its own files and can not open network connections of its own. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'none'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#e8eeff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0f1f" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="Serverless, end-to-end encrypted peer-to-peer voice calls in your browser. No accounts, no servers, no logs.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Secure Voice">
+  <title>Secure P2P Voice</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 
-<div class="container">
-    <h1>🔒 Secure P2P Voice</h1>
-    <p class="subtitle">Serverless. Encrypted. Direct.</p>
+<div class="wallpaper" aria-hidden="true"><i class="orb orb-a"></i><i class="orb orb-b"></i><i class="orb orb-c"></i><i class="orb orb-d"></i></div>
 
-    <div id="statusBar" class="status-bar">
-        <span>●</span> <span id="statusText">Waiting for setup...</span>
+<!-- Icon sprite (Feather-style 24px stroke icons) -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-logo" viewBox="0 0 48 48"><path class="fill" d="M24 4.5 8.5 10v12.2c0 10.3 6.6 17.6 15.5 21.3 8.9-3.7 15.5-11 15.5-21.3V10L24 4.5Z"/><g class="wave"><path d="M16.5 22.5v3M20.25 19v10M24 15.5v17M27.75 20v8M31.5 22.5v3"/></g></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2.5"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></symbol>
+  <symbol id="i-mic-off" viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-phone-in" viewBox="0 0 24 24"><polyline points="16 2 16 8 22 8"/><line x1="23" y1="1" x2="16" y2="8"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2.5"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v1"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+  <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="8.5" cy="8.5" r="1" class="dot"/><circle cx="15.5" cy="8.5" r="1" class="dot"/><circle cx="12" cy="12" r="1" class="dot"/><circle cx="8.5" cy="15.5" r="1" class="dot"/><circle cx="15.5" cy="15.5" r="1" class="dot"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M14 9l2 2"/></symbol>
+</svg>
+
+<div class="app" id="app">
+
+  <header class="toolbar glass">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><svg class="logo-svg"><use href="#i-logo"/></svg></span>
+      <div class="brand-text">
+        <h1 data-i18n="app.title">Secure P2P Voice</h1>
+        <p data-i18n="app.tagline">Serverless · Encrypted · Direct</p>
+      </div>
     </div>
+    <button class="icon-btn" id="btnSettings" type="button" aria-haspopup="dialog" data-i18n-attr="aria-label:settings.open;title:settings.open"><svg class="icon"><use href="#i-sliders"/></svg></button>
+  </header>
 
-    <audio id="remoteAudio" autoplay playsinline></audio>
-
-    <div class="card" id="authCard">
-        <div class="step-title">1. Security Setup</div>
-        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0;">
-            Enter a shared password. Both devices must use the exact same password to encrypt the connection.
-        </p>
-        <input type="password" id="secretKey" placeholder="Enter shared secret password..." />
-        <button onclick="initializeAudio()">🔓 Enable Microphone & Start</button>
+  <div class="pill-row">
+    <div class="pill" id="statusPill" data-tone="idle" role="status" aria-live="polite">
+      <span class="pill-dot" aria-hidden="true"></span><span id="statusText" data-i18n="status.setup">Set a shared password to begin</span>
     </div>
+  </div>
 
-    <div id="mainInterface" class="hidden">
-        
-        <div class="role-selector">
-            <button class="secondary" onclick="switchTab('caller')">📞 I'm Calling</button>
-            <button class="secondary" onclick="switchTab('callee')">📱 I'm Receiving</button>
+  <nav class="stepper" id="stepper" aria-label="Progress">
+    <ol>
+      <li data-step="1" class="is-active"><span class="step-dot">1</span><span data-i18n="step.secret">Secret</span></li>
+      <li data-step="2"><span class="step-dot">2</span><span data-i18n="step.connect">Connect</span></li>
+      <li data-step="3"><span class="step-dot">3</span><span data-i18n="step.talk">Talk</span></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============ 1 · SECRET ============ -->
+    <section class="view" id="viewSetup" aria-labelledby="setupTitle">
+      <div class="card glass">
+        <div class="card-head">
+          <span class="badge tint-blue" aria-hidden="true"><svg class="icon"><use href="#i-key"/></svg></span>
+          <div>
+            <h2 id="setupTitle" data-i18n="setup.title">Choose a shared password</h2>
+            <p class="muted" data-i18n="setup.desc">Both of you enter the same password. It locks the connection codes you exchange, so only the two of you can read them.</p>
+          </div>
         </div>
 
-        <div id="callerTab" class="hidden">
-            <div class="card">
-                <div class="step-title"><span class="step-number">A</span> Generate Offer</div>
-                <p style="font-size: 0.85rem; color: #64748b;">Create a secure link and send it to the receiver.</p>
-                
-                <button id="btnCreateOffer" onclick="createOffer()">Generate Encrypted Code</button>
-                
-                <div id="offerOutput" class="hidden" style="margin-top: 1rem;">
-                    <textarea id="localOffer" rows="3" readonly></textarea>
-                    <button class="success" onclick="shareCode('localOffer')">📤 Share Code</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="step-title"><span class="step-number">B</span> Finalize Connection</div>
-                <p style="font-size: 0.85rem; color: #64748b;">Paste the answer code received from the other person.</p>
-                <textarea id="remoteAnswer" rows="3" placeholder="Paste incoming answer code here..."></textarea>
-                <button onclick="finalizeConnection()">🔌 Connect</button>
-            </div>
+        <div class="alert info" id="inviteBanner" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-phone-in"/></svg>
+          <span data-i18n="setup.invited">You received an invitation. Enter the password you agreed on to continue.</span>
         </div>
 
-        <div id="calleeTab" class="hidden">
-            <div class="card">
-                <div class="step-title"><span class="step-number">A</span> Accept Call</div>
-                <p style="font-size: 0.85rem; color: #64748b;">Paste the code received from the caller.</p>
-                <textarea id="remoteOffer" rows="3" placeholder="Paste incoming offer code here..."></textarea>
-                <button onclick="createAnswer()">Generate Answer</button>
-
-                <div id="answerOutput" class="hidden" style="margin-top: 1rem;">
-                    <label>Send this back to caller:</label>
-                    <textarea id="localAnswer" rows="3" readonly></textarea>
-                    <button class="success" onclick="shareCode('localAnswer')">📤 Share Answer</button>
-                </div>
-            </div>
+        <label class="label" for="secret" data-i18n="setup.label">Shared password</label>
+        <div class="input-group">
+          <input id="secret" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" data-i18n-attr="placeholder:setup.placeholder" placeholder="At least 8 characters">
+          <button class="icon-btn flat" id="btnReveal" type="button" aria-pressed="false" data-i18n-attr="aria-label:setup.reveal;title:setup.reveal"><svg class="icon"><use href="#i-eye"/></svg></button>
+          <button class="icon-btn flat" id="btnGenerate" type="button" data-i18n-attr="aria-label:setup.generate;title:setup.generate"><svg class="icon"><use href="#i-dice"/></svg></button>
+          <button class="icon-btn flat" id="btnCopySecret" type="button" data-i18n-attr="aria-label:setup.copy;title:setup.copy"><svg class="icon"><use href="#i-copy"/></svg></button>
         </div>
-    </div>
+
+        <div class="strength" id="strength" data-score="0">
+          <div class="strength-bar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <span class="strength-label" id="strengthLabel"></span>
+        </div>
+        <p class="hint" id="strengthHint" data-i18n="setup.hint.empty">Tip: tap the dice for a strong random password, then read it to your contact over the phone or in person.</p>
+
+        <ul class="facts">
+          <li><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="setup.fact1">The password never leaves this device and is never stored.</span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><span data-i18n="setup.fact2">Share it through a different channel than the connection code.</span></li>
+        </ul>
+
+        <button class="btn primary block" id="btnContinue" type="button"><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg><span data-i18n="setup.continue">Enable microphone &amp; continue</span></button>
+
+        <div class="alert warn" id="micError" role="alert" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+          <div>
+            <p id="micErrorText"></p>
+            <div class="btn-row tight">
+              <button class="btn small" id="btnMicRetry" type="button" data-i18n="mic.retry">Try again</button>
+              <button class="btn small" id="btnListenOnly" type="button" data-i18n="mic.listenOnly">Continue without microphone</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2 · CONNECT ============ -->
+    <section class="view" id="viewConnect" hidden>
+
+      <div class="segmented glass" id="roleSwitch" data-i="0" role="tablist">
+        <span class="seg-thumb" aria-hidden="true"></span>
+        <button type="button" role="tab" id="tabCaller" data-role="caller" aria-selected="true" aria-controls="panelCaller"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="role.caller">Start a call</span></button>
+        <button type="button" role="tab" id="tabCallee" data-role="callee" aria-selected="false" aria-controls="panelCallee"><svg class="icon" aria-hidden="true"><use href="#i-phone-in"/></svg><span data-i18n="role.callee">Join a call</span></button>
+      </div>
+
+      <div id="panelCaller" role="tabpanel" aria-labelledby="tabCaller">
+        <div class="card glass">
+          <div class="card-head">
+            <span class="num" aria-hidden="true">1</span>
+            <div>
+              <h2 data-i18n="caller.s1.title">Create an invitation</h2>
+              <p class="muted" data-i18n="caller.s1.desc">Generates an encrypted code. Send it to the person you want to call.</p>
+            </div>
+          </div>
+          <button class="btn primary block" id="btnCreateOffer" type="button" data-i18n="caller.s1.button">Create invitation</button>
+          <div class="progress" id="offerProgress" hidden><span class="spinner" aria-hidden="true"></span><span data-i18n="progress.gathering">Collecting secure connection details…</span></div>
+          <div class="code-block" id="offerOut" hidden>
+            <label class="sr-only" for="offerCode" data-i18n="code.invitation">Invitation code</label>
+            <textarea id="offerCode" class="code" readonly rows="4" spellcheck="false"></textarea>
+            <div class="code-meta"><span id="offerMeta"></span></div>
+            <div class="btn-row">
+              <button class="btn" id="btnCopyOffer" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="action.copy">Copy</span></button>
+              <button class="btn" id="btnShareOffer" type="button"><svg class="icon" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="action.share">Share</span></button>
+              <button class="btn" id="btnQrOffer" type="button" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="action.qr">QR code</span></button>
+            </div>
+            <div class="qr-panel" id="offerQr" hidden>
+              <div class="qr-frame" id="offerQrImage" role="img" data-i18n-attr="aria-label:qr.alt"></div>
+              <p class="muted small" id="offerQrHint" data-i18n="qr.invite.hint">Let your contact scan this with their camera. It opens the app with your invitation filled in.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <span class="num" aria-hidden="true">2</span>
+            <div>
+              <h2 data-i18n="caller.s2.title">Paste the reply</h2>
+              <p class="muted" data-i18n="caller.s2.desc">When your contact sends their reply code back, paste it here.</p>
+            </div>
+          </div>
+          <label class="sr-only" for="replyInput" data-i18n="code.reply">Reply code</label>
+          <textarea id="replyInput" class="code" rows="3" spellcheck="false" autocapitalize="off" autocorrect="off" data-i18n-attr="placeholder:caller.s2.placeholder" placeholder="Paste the reply code…"></textarea>
+          <div class="btn-row">
+            <button class="btn" id="btnScanReply" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg><span data-i18n="action.scan">Scan QR</span></button>
+            <button class="btn primary grow" id="btnConnect" type="button"><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg><span data-i18n="caller.s2.button">Connect</span></button>
+          </div>
+          <div class="progress" id="connectProgress" hidden><span class="spinner" aria-hidden="true"></span><span data-i18n="progress.connecting">Establishing a direct connection…</span></div>
+        </div>
+      </div>
+
+      <div id="panelCallee" role="tabpanel" aria-labelledby="tabCallee" hidden>
+        <div class="card glass">
+          <div class="card-head">
+            <span class="num" aria-hidden="true">1</span>
+            <div>
+              <h2 data-i18n="callee.s1.title">Paste the invitation</h2>
+              <p class="muted" data-i18n="callee.s1.desc">Paste the code (or link) you received from the caller.</p>
+            </div>
+          </div>
+          <label class="sr-only" for="inviteInput" data-i18n="code.invitation">Invitation code</label>
+          <textarea id="inviteInput" class="code" rows="4" spellcheck="false" autocapitalize="off" autocorrect="off" data-i18n-attr="placeholder:callee.s1.placeholder" placeholder="Paste the invitation code…"></textarea>
+          <div class="btn-row">
+            <button class="btn" id="btnScanInvite" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg><span data-i18n="action.scan">Scan QR</span></button>
+            <button class="btn primary grow" id="btnCreateAnswer" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="callee.s1.button">Create reply</span></button>
+          </div>
+          <div class="progress" id="answerProgress" hidden><span class="spinner" aria-hidden="true"></span><span data-i18n="progress.gathering">Collecting secure connection details…</span></div>
+        </div>
+
+        <div class="card glass" id="cardAnswer" hidden>
+          <div class="card-head">
+            <span class="num" aria-hidden="true">2</span>
+            <div>
+              <h2 data-i18n="callee.s2.title">Send the reply back</h2>
+              <p class="muted" data-i18n="callee.s2.desc">Send this code to the caller. They will connect from their side.</p>
+            </div>
+          </div>
+          <label class="sr-only" for="answerCode" data-i18n="code.reply">Reply code</label>
+          <textarea id="answerCode" class="code" readonly rows="4" spellcheck="false"></textarea>
+          <div class="code-meta"><span id="answerMeta"></span></div>
+          <div class="btn-row">
+            <button class="btn" id="btnCopyAnswer" type="button"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span data-i18n="action.copy">Copy</span></button>
+            <button class="btn" id="btnShareAnswer" type="button"><svg class="icon" aria-hidden="true"><use href="#i-share"/></svg><span data-i18n="action.share">Share</span></button>
+            <button class="btn" id="btnQrAnswer" type="button" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg><span data-i18n="action.qr">QR code</span></button>
+          </div>
+          <div class="qr-panel" id="answerQr" hidden>
+            <div class="qr-frame" id="answerQrImage" role="img" data-i18n-attr="aria-label:qr.alt"></div>
+            <p class="muted small" data-i18n="qr.reply.hint">The caller can scan this with “Scan QR” in their app.</p>
+          </div>
+          <div class="progress" id="waitProgress"><span class="spinner" aria-hidden="true"></span><span data-i18n="progress.waiting">Waiting for the caller to connect…</span></div>
+        </div>
+      </div>
+
+      <div class="center-row">
+        <button class="btn ghost small" id="btnBack" type="button"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg><span data-i18n="action.changePassword">Change password</span></button>
+        <button class="btn ghost small" id="btnReset" type="button"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg><span data-i18n="action.startOver">Start over</span></button>
+      </div>
+    </section>
+
+    <!-- ============ 3 · TALK ============ -->
+    <section class="view" id="viewCall" hidden aria-label="Call">
+      <div class="card glass call-card">
+        <div class="call-top">
+          <div class="call-timer" id="callTimer" aria-live="off">00:00</div>
+          <div class="call-state" id="callState" data-i18n="call.connecting">Connecting…</div>
+          <div class="chips">
+            <span class="chip ok"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><span data-i18n="call.encrypted">Encrypted</span></span>
+            <span class="chip" id="chipRoute" hidden></span>
+            <span class="chip" id="chipQuality" data-q="" hidden><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="chipRtt"></span></span>
+          </div>
+        </div>
+
+        <div class="tiles">
+          <div class="tile" id="tilePeer">
+            <div class="avatar peer"><svg class="icon avatar-icon" id="peerIcon" aria-hidden="true"><use href="#i-user"/></svg><span class="avatar-letter" id="peerLetter" hidden></span><i class="ring" aria-hidden="true"></i><span class="avatar-mute" id="peerMuteBadge" hidden><svg class="icon"><use href="#i-mic-off"/></svg></span></div>
+            <div class="tile-name" id="peerName" data-i18n="call.peer">Contact</div>
+            <div class="tile-sub" id="peerSub"></div>
+          </div>
+          <div class="tile" id="tileSelf">
+            <div class="avatar self"><svg class="icon avatar-icon" id="selfIcon" aria-hidden="true"><use href="#i-user"/></svg><span class="avatar-letter" id="selfLetter" hidden></span><i class="ring" aria-hidden="true"></i><span class="avatar-mute" id="selfMuteBadge" hidden><svg class="icon"><use href="#i-mic-off"/></svg></span></div>
+            <div class="tile-name" id="selfName" data-i18n="call.you">You</div>
+            <div class="tile-sub" id="selfSub"></div>
+          </div>
+        </div>
+
+        <div class="sas" id="sasCard" data-state="pending">
+          <div class="sas-head">
+            <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+            <strong data-i18n="sas.title">Security code</strong>
+            <span class="sas-status" id="sasStatus"></span>
+          </div>
+          <div class="sas-emoji" id="sasEmoji" role="img" aria-live="polite"></div>
+          <p class="muted small" id="sasHelp" data-i18n="sas.help">Read these symbols to each other. If they are identical on both screens, nobody is listening in.</p>
+          <div class="btn-row tight" id="sasActions">
+            <button class="btn small success" id="btnSasMatch" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="sas.match">They match</span></button>
+            <button class="btn small danger" id="btnSasDiffer" type="button"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg><span data-i18n="sas.differ">They differ</span></button>
+          </div>
+        </div>
+
+        <div class="alert warn" id="audioBlocked" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-volume"/></svg>
+          <div><p data-i18n="call.audioBlocked">Your browser blocked audio playback.</p><button class="btn small" id="btnEnableAudio" type="button" data-i18n="call.enableAudio">Tap to enable sound</button></div>
+        </div>
+
+        <div class="dock" role="toolbar" data-i18n-attr="aria-label:call.controls">
+          <button class="dock-btn" id="btnMute" type="button" aria-pressed="false" data-i18n-attr="aria-label:call.mute;title:call.mute"><svg class="icon" id="iconMic"><use href="#i-mic"/></svg><span data-i18n="call.mute.short">Mute</span></button>
+          <button class="dock-btn toggle" id="btnChat" type="button" aria-pressed="false" data-i18n-attr="aria-label:call.chat;title:call.chat"><svg class="icon"><use href="#i-chat"/></svg><span data-i18n="call.chat.short">Chat</span><i class="badge-dot" id="chatBadge" hidden></i></button>
+          <button class="dock-btn toggle" id="btnDetails" type="button" aria-pressed="false" data-i18n-attr="aria-label:call.details;title:call.details"><svg class="icon"><use href="#i-activity"/></svg><span data-i18n="call.details.short">Details</span></button>
+          <button class="dock-btn end" id="btnHangup" type="button" data-i18n-attr="aria-label:call.end;title:call.end"><svg class="icon hangup"><use href="#i-phone"/></svg><span data-i18n="call.end.short">End</span></button>
+        </div>
+      </div>
+
+      <div class="card glass chat" id="chatPanel" hidden>
+        <h2 class="card-title" data-i18n="chat.title">Encrypted chat</h2>
+        <ol class="chat-log" id="chatLog" aria-live="polite"></ol>
+        <p class="muted small chat-empty" id="chatEmpty" data-i18n="chat.empty">Messages go straight to your contact, encrypted like the voice.</p>
+        <form class="chat-form" id="chatForm" autocomplete="off">
+          <label class="sr-only" for="chatInput" data-i18n="chat.label">Message</label>
+          <input id="chatInput" type="text" maxlength="2000" enterkeyhint="send" data-i18n-attr="placeholder:chat.placeholder" placeholder="Type a message…">
+          <button class="icon-btn primary" id="btnSend" type="submit" data-i18n-attr="aria-label:chat.send;title:chat.send"><svg class="icon"><use href="#i-send"/></svg></button>
+        </form>
+      </div>
+
+      <div class="card glass" id="detailsPanel" hidden>
+        <h2 class="card-title" data-i18n="details.title">Connection details</h2>
+        <dl class="stats">
+          <div><dt data-i18n="details.route">Route</dt><dd id="stRoute">–</dd></div>
+          <div><dt data-i18n="details.latency">Latency</dt><dd id="stRtt">–</dd></div>
+          <div><dt data-i18n="details.jitter">Jitter</dt><dd id="stJitter">–</dd></div>
+          <div><dt data-i18n="details.loss">Packet loss</dt><dd id="stLoss">–</dd></div>
+          <div><dt data-i18n="details.down">Download</dt><dd id="stDown">–</dd></div>
+          <div><dt data-i18n="details.up">Upload</dt><dd id="stUp">–</dd></div>
+        </dl>
+        <p class="muted small" data-i18n="details.note">Audio is encrypted with DTLS-SRTP and flows directly between the two devices whenever the network allows it.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="footer.privacy">No server · No account · No logs</span></p>
+    <p class="small"><a href="https://github.com/furkiak/secure-p2p-voice" target="_blank" rel="noopener noreferrer" data-i18n="footer.source">Source code</a> · MIT</p>
+  </footer>
 </div>
 
-<script>
-    // --- CONFIGURATION ---
-    const config = {
-        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-    };
+<audio id="remoteAudio" autoplay playsinline></audio>
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
-    let localStream;
-    let peerConnection;
-    
-    // --- UI FUNCTIONS ---
-    function updateStatus(msg, type = 'normal') {
-        const bar = document.getElementById('statusBar');
-        const text = document.getElementById('statusText');
-        text.innerText = msg;
-        
-        if (type === 'success') {
-            bar.style.background = '#dcfce7';
-            bar.style.color = '#15803d';
-        } else if (type === 'error') {
-            bar.style.background = '#fee2e2';
-            bar.style.color = '#b91c1c';
-        } else {
-            bar.style.background = '#dbeafe';
-            bar.style.color = '#1e40af';
-        }
-    }
+<!-- QR scanner -->
+<dialog id="scannerDialog" class="sheet glass scanner" aria-labelledby="scannerTitle">
+  <header class="sheet-head"><h2 id="scannerTitle" data-i18n="scan.title">Scan QR code</h2><button class="icon-btn flat" id="btnCloseScanner" type="button" data-i18n-attr="aria-label:action.close;title:action.close"><svg class="icon"><use href="#i-x"/></svg></button></header>
+  <div class="scanner-view"><video id="scannerVideo" playsinline muted></video><i class="scanner-frame" aria-hidden="true"></i></div>
+  <p class="muted small center" id="scannerHint" data-i18n="scan.hint">Point the camera at the code.</p>
+</dialog>
 
-    function switchTab(tab) {
-        document.getElementById('callerTab').classList.add('hidden');
-        document.getElementById('calleeTab').classList.add('hidden');
-        document.getElementById(tab + 'Tab').classList.remove('hidden');
-    }
+<!-- Settings -->
+<dialog id="settingsDialog" class="sheet glass" aria-labelledby="settingsTitle">
+  <header class="sheet-head">
+    <h2 id="settingsTitle" data-i18n="settings.title">Settings</h2>
+    <button class="icon-btn flat" id="btnCloseSettings" type="button" data-i18n-attr="aria-label:action.close;title:action.close"><svg class="icon"><use href="#i-x"/></svg></button>
+  </header>
+  <div class="sheet-body">
 
-    async function initializeAudio() {
-        const password = document.getElementById('secretKey').value;
-        if (!password) {
-            alert("Please set a password first.");
-            return;
-        }
+    <section class="group">
+      <h3 data-i18n="settings.appearance">Appearance</h3>
+      <div class="row"><label for="setLang" data-i18n="settings.language">Language</label>
+        <select id="setLang"><option value="auto" data-i18n="settings.auto">Automatic</option><option value="en">English</option><option value="tr">Türkçe</option></select></div>
+      <div class="row"><label for="setTheme" data-i18n="settings.theme">Theme</label>
+        <select id="setTheme"><option value="auto" data-i18n="settings.auto">Automatic</option><option value="light" data-i18n="settings.light">Light</option><option value="dark" data-i18n="settings.dark">Dark</option></select></div>
+    </section>
 
-        try {
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            document.getElementById('authCard').classList.add('hidden');
-            document.getElementById('mainInterface').classList.remove('hidden');
-            updateStatus("Microphone active. Select your role.");
-        } catch (err) {
-            console.error(err);
-            updateStatus("Error: Microphone access denied.", "error");
-            alert("Microphone permission is required for voice chat.");
-        }
-    }
+    <section class="group">
+      <h3 data-i18n="settings.profile">Profile</h3>
+      <div class="row stack"><label for="setName" data-i18n="settings.name">Display name</label>
+        <input id="setName" type="text" maxlength="24" autocomplete="off" data-i18n-attr="placeholder:settings.name.placeholder" placeholder="Optional">
+        <p class="hint" data-i18n="settings.name.hint">Shown to the person you talk to, sent only over the encrypted connection.</p></div>
+    </section>
 
-    async function shareCode(elementId) {
-        const text = document.getElementById(elementId).value;
-        try {
-            if (navigator.share) {
-                await navigator.share({ title: 'Secure Link', text: text });
-            } else {
-                throw new Error("Web Share API not supported");
-            }
-        } catch (err) {
-            await navigator.clipboard.writeText(text);
-            alert("Code copied to clipboard!");
-        }
-    }
+    <section class="group">
+      <h3 data-i18n="settings.audio">Audio</h3>
+      <div class="row"><label for="setMic" data-i18n="settings.mic">Microphone</label><select id="setMic"></select></div>
+      <div class="row" id="rowSpeaker" hidden><label for="setSpeaker" data-i18n="settings.speaker">Speaker</label><select id="setSpeaker"></select></div>
+      <div class="row"><label for="setQuality" data-i18n="settings.quality">Voice quality</label>
+        <select id="setQuality"><option value="16" data-i18n="settings.quality.low">Data saver · 16 kbps</option><option value="32" data-i18n="settings.quality.std">Standard · 32 kbps</option><option value="64" data-i18n="settings.quality.high">High · 64 kbps</option></select></div>
+      <div class="row"><span data-i18n="settings.echo">Echo cancellation</span><label class="switch"><input type="checkbox" id="setEcho" role="switch"><span class="switch-ui"></span></label></div>
+      <div class="row"><span data-i18n="settings.noise">Noise suppression</span><label class="switch"><input type="checkbox" id="setNoise" role="switch"><span class="switch-ui"></span></label></div>
+      <div class="row"><span data-i18n="settings.agc">Automatic gain</span><label class="switch"><input type="checkbox" id="setAgc" role="switch"><span class="switch-ui"></span></label></div>
+    </section>
 
-    // --- WEBRTC CORE ---
-    function createPeerConnection() {
-        const pc = new RTCPeerConnection(config);
-        
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+    <section class="group">
+      <h3 data-i18n="settings.network">Network &amp; privacy</h3>
+      <div class="row stack"><label for="setIce" data-i18n="settings.ice">Connection helper</label>
+        <select id="setIce">
+          <option value="google" data-i18n="settings.ice.google">Google STUN (default)</option>
+          <option value="cloudflare" data-i18n="settings.ice.cloudflare">Cloudflare STUN</option>
+          <option value="none" data-i18n="settings.ice.none">None — same network only</option>
+          <option value="custom" data-i18n="settings.ice.custom">Custom servers…</option>
+        </select>
+        <p class="hint" id="iceHint"></p></div>
+      <div id="customIceBlock" hidden>
+        <div class="row stack"><label for="setCustomIce" data-i18n="settings.ice.list">STUN / TURN servers</label>
+          <textarea id="setCustomIce" rows="3" spellcheck="false" autocapitalize="off" placeholder="stun:stun.example.org:3478&#10;turn:turn.example.org:3478 user password"></textarea>
+          <p class="hint" data-i18n="settings.ice.listHint">One server per line. TURN entries need a username and password.</p></div>
+        <div class="row"><span data-i18n="settings.relay">Relay only (hide my IP)</span><label class="switch"><input type="checkbox" id="setRelay" role="switch"><span class="switch-ui"></span></label></div>
+      </div>
+    </section>
 
-        pc.ontrack = (event) => {
-            const remoteAudio = document.getElementById('remoteAudio');
-            remoteAudio.srcObject = event.streams[0];
-            updateStatus("CONNECTED SECURELY 🔒", "success");
-        };
+    <section class="group">
+      <h3 data-i18n="settings.about">About</h3>
+      <p class="muted small" data-i18n="settings.about.text">Settings are kept only in this browser. The shared password is never saved.</p>
+      <button class="btn small danger" id="btnResetSettings" type="button" data-i18n="settings.reset">Reset settings</button>
+    </section>
+  </div>
+</dialog>
 
-        pc.onconnectionstatechange = () => {
-            if (pc.connectionState === 'connected') {
-                updateStatus("CONNECTED SECURELY 🔒", "success");
-            } else if (pc.connectionState === 'disconnected') {
-                updateStatus("Peer disconnected", "error");
-            }
-        };
-
-        return pc;
-    }
-
-    // CALLER: Step 1
-    async function createOffer() {
-        document.getElementById('btnCreateOffer').disabled = true;
-        updateStatus("Generating keys...", "normal");
-        
-        peerConnection = createPeerConnection();
-        // Create data channel to ensure connection establishment even without audio initially
-        peerConnection.createDataChannel("secure_chat");
-
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-
-        peerConnection.onicecandidate = async (event) => {
-            if (event.candidate === null) {
-                // Gathering complete
-                const rawSDP = JSON.stringify(peerConnection.localDescription);
-                const encryptedSDP = await encryptData(rawSDP);
-                
-                document.getElementById('localOffer').value = encryptedSDP;
-                document.getElementById('offerOutput').classList.remove('hidden');
-                updateStatus("Offer ready. Send it to the receiver.");
-            }
-        };
-    }
-
-    // CALLEE: Step 2
-    async function createAnswer() {
-        const encryptedOffer = document.getElementById('remoteOffer').value;
-        if (!encryptedOffer) return alert("Please paste the offer code first.");
-
-        try {
-            updateStatus("Decrypting...", "normal");
-            const decryptedSDP = await decryptData(encryptedOffer);
-            const offerDesc = JSON.parse(decryptedSDP);
-
-            peerConnection = createPeerConnection();
-            await peerConnection.setRemoteDescription(offerDesc);
-
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-
-            peerConnection.onicecandidate = async (event) => {
-                if (event.candidate === null) {
-                    const rawAnswer = JSON.stringify(peerConnection.localDescription);
-                    const encryptedAnswer = await encryptData(rawAnswer);
-                    
-                    document.getElementById('localAnswer').value = encryptedAnswer;
-                    document.getElementById('answerOutput').classList.remove('hidden');
-                    updateStatus("Answer ready. Send it back to caller.");
-                }
-            };
-
-        } catch (err) {
-            console.error(err);
-            updateStatus("Decryption failed. Check password.", "error");
-            alert("Failed to decrypt. Ensure both sides use the same password.");
-        }
-    }
-
-    // CALLER: Step 3
-    async function finalizeConnection() {
-        const encryptedAnswer = document.getElementById('remoteAnswer').value;
-        if (!encryptedAnswer) return alert("Please paste the answer code.");
-
-        try {
-            updateStatus("Establishing connection...", "pulsing");
-            const decryptedAnswer = await decryptData(encryptedAnswer);
-            const answerDesc = JSON.parse(decryptedAnswer);
-            
-            await peerConnection.setRemoteDescription(answerDesc);
-            
-        } catch (err) {
-            console.error(err);
-            updateStatus("Connection failed. Check codes.", "error");
-            alert("Failed to finalize connection. Check password and codes.");
-        }
-    }
-
-    // --- ENCRYPTION (AES-GCM) ---
-    async function getCryptoKey() {
-        const password = document.getElementById('secretKey').value;
-        const enc = new TextEncoder();
-        const keyMaterial = await window.crypto.subtle.importKey(
-            "raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]
-        );
-        // Derive a key from the password
-        return window.crypto.subtle.deriveKey(
-            {
-                name: "PBKDF2",
-                salt: enc.encode("static_salt_for_simplicity_v1"), 
-                iterations: 100000,
-                hash: "SHA-256"
-            },
-            keyMaterial,
-            { name: "AES-GCM", length: 256 },
-            false,
-            ["encrypt", "decrypt"]
-        );
-    }
-
-    async function encryptData(plainText) {
-        const key = await getCryptoKey();
-        const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Random IV
-        const encodedText = new TextEncoder().encode(plainText);
-
-        const encryptedContent = await window.crypto.subtle.encrypt(
-            { name: "AES-GCM", iv: iv },
-            key,
-            encodedText
-        );
-
-        // Combine IV and Ciphertext for transmission
-        const ivArray = Array.from(iv);
-        const contentArray = Array.from(new Uint8Array(encryptedContent));
-        const package = { iv: ivArray, data: contentArray };
-        
-        return btoa(JSON.stringify(package));
-    }
-
-    async function decryptData(encryptedString) {
-        const key = await getCryptoKey();
-        const package = JSON.parse(atob(encryptedString));
-        
-        const iv = new Uint8Array(package.iv);
-        const data = new Uint8Array(package.data);
-
-        const decryptedContent = await window.crypto.subtle.decrypt(
-            { name: "AES-GCM", iv: iv },
-            key,
-            data
-        );
-
-        return new TextDecoder().decode(decryptedContent);
-    }
-</script>
-
+<script src="js/util.js"></script>
+<script src="js/crypto.js"></script>
+<script src="js/codec.js"></script>
+<script src="js/sas.js"></script>
+<script src="js/qr.js"></script>
+<script src="js/call.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
