@@ -1,0 +1,25 @@
+{
+  "name": "secure-p2p-voice",
+  "version": "2.0.0",
+  "description": "Serverless, end-to-end encrypted peer-to-peer voice calls in the browser. No accounts, no servers, no logs.",
+  "private": true,
+  "license": "MIT",
+  "author": "Furkan Akça",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/furkiak/secure-p2p-voice.git"
+  },
+  "scripts": {
+    "start": "node scripts/serve.cjs",
+    "test": "node --test \"tests/*.test.js\"",
+    "test:e2e": "node tests/e2e.cjs",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "playwright": "^1.50.0"
+  }
+}
