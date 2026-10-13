@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.1
+
+- **Live demo:** the app is published on GitHub Pages straight from this repository by a workflow, with exactly the
+  files you can review here.
+- **Screenshots** of the setup, the invitation and a verified call in the README.
+- **Fixed:** Microsoft Edge showed two "show password" buttons in the password field (its own and the app's).
+
 ## 2.0.0
 
 A ground-up rework of the single-file prototype into a small, tested, dependency-free app.

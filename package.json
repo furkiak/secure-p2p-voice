@@ -1,6 +1,6 @@
 {
   "name": "secure-p2p-voice",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Serverless, end-to-end encrypted peer-to-peer voice calls in the browser. No accounts, no servers, no logs.",
   "private": true,
   "license": "MIT",

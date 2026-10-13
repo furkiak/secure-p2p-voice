@@ -6,7 +6,7 @@
  * with the cached copy as the fallback. Only same-origin GET requests are
  * handled and nothing else is ever stored.
  */
-const CACHE = 'spv-v2.0.0';
+const CACHE = 'spv-v2.0.1';
 const SHELL = [
   './',
   'index.html',

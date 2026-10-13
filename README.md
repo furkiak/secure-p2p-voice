@@ -13,6 +13,14 @@ No accounts. No servers. No logs.
 [![Dependencies](https://img.shields.io/badge/Runtime%20dependencies-0-brightgreen.svg)](#-project-structure)
 [![CI](https://github.com/furkiak/secure-p2p-voice/actions/workflows/ci.yml/badge.svg)](https://github.com/furkiak/secure-p2p-voice/actions/workflows/ci.yml)
 
+**[▶ Open the live app](https://furkiak.github.io/secure-p2p-voice/)** — on two devices, or in two browser windows
+
+<p>
+  <img src="docs/images/setup-dark.png" width="30%" alt="Choosing a shared password, dark mode">
+  <img src="docs/images/invitation-light.png" width="30%" alt="An encrypted invitation with its QR code, light mode">
+  <img src="docs/images/call-dark.png" width="30%" alt="A verified call with the emoji security code and connection details">
+</p>
+
 [English](#english) · [Türkçe](#türkçe)
 
 </div>
@@ -110,7 +118,7 @@ spv1.<base64url>      version(1) flags(1) kdf-cost(1) salt(16) iv(12) length(2) 
 * **The password is the weak spot.** Anyone who captures a code can try passwords offline. PBKDF2 with 600 000 iterations slows that down, but only a strong password stops it — use the generator.
 * **Peers see each other’s IP address,** and an enabled STUN server (Google / Cloudflare) sees yours when you create a code. Choose *None* in **Settings → Network** for same‑network calls, or use a VPN / your own TURN with *relay only*.
 * The 48‑bit **security code** is a second line of defence against someone who already knows the password; it is not a replacement for a strong one.
-* **You trust the host of the files.** If you serve the app from someone else’s domain, you trust them not to change it. Self‑host it (it is just static files) or run it from disk. The code is small and has no dependencies, so it is easy to review.
+* **You trust the host of the files.** If you serve the app from someone else’s domain, you trust them not to change it. Self‑host it (it is just static files) or run it from disk. The code is small and has no dependencies, so it is easy to review. The [live app](https://furkiak.github.io/secure-p2p-voice/) is published to GitHub Pages by a [workflow](.github/workflows/pages.yml) that copies exactly the files of this repository, after the tests pass.
 * Symmetric NATs and strict firewalls may need a TURN server (**Settings → Network → Custom servers**).
 * This project has **not** had an independent security audit.
 
@@ -207,6 +215,8 @@ kısa bir **şifreli kod** değiş tokuş eder. Bundan sonra ses, DTLS‑SRTP il
 
 Uygulamanın tamamı birkaç statik dosyadan oluşur: `index.html`'i açın, istediğiniz yerde barındırın ya da uygulama olarak yükleyin.
 
+**[▶ Canlı uygulamayı açın](https://furkiak.github.io/secure-p2p-voice/)**: iki cihazda ya da iki tarayıcı penceresinde deneyin.
+
 ## ✨ Özellikler
 
 | | |
@@ -267,7 +277,7 @@ Eksik kopyalanmış kodlar yanlış parola gibi değil, *“kod eksik”* olarak
 * **Zayıf halka paroladır.** Bir kodu ele geçiren kişi parolaları çevrimdışı deneyebilir. 600 000 turluk PBKDF2 bunu yavaşlatır, ancak yalnızca güçlü bir parola durdurur; oluşturucuyu kullanın.
 * **Eşler birbirinin IP adresini görür** ve etkin bir STUN sunucusu (Google / Cloudflare), kod oluşturduğunuzda sizinkini görür. Aynı ağdaki aramalar için **Ayarlar → Ağ**'da *Yok*'u seçin; ya da VPN / kendi TURN sunucunuzu “yalnızca aktarma” ile kullanın.
 * 48 bitlik **güvenlik kodu**, parolayı zaten bilen birine karşı ikinci bir savunmadır; güçlü parolanın yerini tutmaz.
-* **Dosyaları barındırana güveniyorsunuz.** Uygulamayı başkasının alan adından açarsanız onun değiştirmeyeceğine güvenirsiniz. Kendiniz barındırın (yalnızca statik dosyalar) ya da diskten çalıştırın. Kod küçüktür ve bağımlılığı yoktur, incelemesi kolaydır.
+* **Dosyaları barındırana güveniyorsunuz.** Uygulamayı başkasının alan adından açarsanız onun değiştirmeyeceğine güvenirsiniz. Kendiniz barındırın (yalnızca statik dosyalar) ya da diskten çalıştırın. Kod küçüktür ve bağımlılığı yoktur, incelemesi kolaydır. [Canlı uygulama](https://furkiak.github.io/secure-p2p-voice/), testler geçtikten sonra bu deponun dosyalarını birebir kopyalayan bir [workflow](.github/workflows/pages.yml) ile GitHub Pages'te yayımlanır.
 * Simetrik NAT'lar ve katı güvenlik duvarları TURN sunucusu gerektirebilir (**Ayarlar → Ağ → Özel sunucular**).
 * Bu proje **bağımsız bir güvenlik denetiminden geçmemiştir.**
 

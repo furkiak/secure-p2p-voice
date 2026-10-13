@@ -269,6 +269,8 @@ main { display: flex; flex-direction: column; flex: 1; }
 }
 .input-group { display: flex; align-items: center; gap: .05rem; padding: .2rem .3rem .2rem .95rem; border-radius: var(--r-md); }
 .input-group input { flex: 1; min-width: 0; height: 2.7rem; border: 0; outline: 0; background: none; font-size: 1rem; }
+/* Edge adds its own reveal button to password fields; the app has one already. */
+.input-group input::-ms-reveal, .input-group input::-ms-clear { display: none; }
 .input-group:focus-within, input[type="text"]:focus, textarea:focus, select:focus {
   outline: 0;
   box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 0 4px color-mix(in srgb, var(--accent) 26%, transparent);
